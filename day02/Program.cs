@@ -135,6 +135,7 @@ void SolveTwo(string file)
                 //Console.WriteLine("Invalid " + i);
                 invalidIdSum += i;
             }
+
         }
     }
 
@@ -146,3 +147,75 @@ void SolveTwo(string file)
 
 SolveTwo("ex.txt");
 SolveTwo("in.txt");
+
+long FindNextInvalidId(long start, long end)
+{
+    var nextInvalid = end + 1;
+    var startStr = start.ToString();
+    for (int splitLength = 1; splitLength * 2 <= startStr.Length; splitLength++)
+    {
+        if (startStr.Length % splitLength != 0) continue;
+        string part = startStr.Substring(0, splitLength);
+        
+        string lowCandidate = "";
+        while (lowCandidate.Length < startStr.Length) lowCandidate += part;
+        long low = long.Parse(lowCandidate);
+        
+        if (low >= start && low <= end)
+        {
+            nextInvalid = Math.Min(nextInvalid, low);
+        }
+        else if (low < start) {
+            string highCandidate = "";
+            long highPart = long.Parse(part) + 1;
+
+            while (highCandidate.Length < startStr.Length) highCandidate += highPart;
+            long high = long.Parse(highCandidate);
+
+            if (high >= start && high <= end)
+            {
+                nextInvalid = Math.Min(nextInvalid, high);                
+            }
+        }
+    }
+
+    if (startStr.Length < end.ToString().Length)
+    {
+        var nextStringLength = "1";
+        for (int i = 0; i < startStr.Length; i++) nextStringLength += "0";
+        nextInvalid = Math.Min(nextInvalid, FindNextInvalidId(long.Parse(nextStringLength), end));
+    }
+    return nextInvalid;
+}
+
+void SolveTwoB(string file)
+{
+    Console.WriteLine($"{Project()}.2b Solve for: " + file);
+    var sw = System.Diagnostics.Stopwatch.StartNew();
+
+    var ranges = File.ReadAllText(FilePath(file)).Split(",").ToList();
+    long invalidIdSum = 0;
+
+    foreach (var range in ranges)
+    {
+        var start = long.Parse(range.Split("-")[0]);
+        var end = long.Parse(range.Split("-")[1]);
+        for (long i = start; i <= end; i++)
+        {
+            var nextInvalid = FindNextInvalidId(i, end);
+            if (nextInvalid <= end)
+            {
+                invalidIdSum += nextInvalid;
+            }
+            i = nextInvalid;
+        }
+    }
+
+    sw.Stop();
+    Console.WriteLine("Invalid id sum: " + invalidIdSum);
+    Console.WriteLine("Runtime: " + sw.ElapsedMilliseconds.ToString("0.000") + " ms");
+    Console.WriteLine("");
+}
+
+SolveTwoB("ex.txt");
+SolveTwoB("in.txt");
