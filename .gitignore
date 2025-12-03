@@ -57,3 +57,5 @@ nunit-*.xml
 **/in.txt
 **/ex.txt
 
+## VS cache
+.vs/
