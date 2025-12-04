@@ -1,4 +1,6 @@
-﻿string Project() => System.Reflection.Assembly.GetCallingAssembly().GetName().Name!;
+﻿using System.Diagnostics;
+
+string Project() => System.Reflection.Assembly.GetCallingAssembly().GetName().Name!;
 string ProjectDir() => System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetCallingAssembly().Location)!;
 string FilePath(string file) => Path.Join(ProjectDir(), "../../../", file);
 
@@ -30,7 +32,7 @@ void SolveOne(string file)
 
     sw.Stop();   
     Console.WriteLine("Times at zero: " + timesAtZero);
-    Console.WriteLine("Runtime: " + sw.ElapsedMilliseconds.ToString("0.000") + " ms");
+    Console.WriteLine("Runtime: " + (sw.ElapsedTicks / (Stopwatch.Frequency / 1_000.0)).ToString("0.000") + " ms");
     Console.WriteLine("");
 }
 
@@ -92,7 +94,7 @@ void SolveTwo(string file)
 
     sw.Stop();
     Console.WriteLine("Times at zero: " + timesAtZero);
-    Console.WriteLine("Runtime: " + sw.ElapsedMilliseconds.ToString("0.000") + " ms");
+    Console.WriteLine("Runtime: " + (sw.ElapsedTicks / (Stopwatch.Frequency / 1_000.0)).ToString("0.000") + " ms");
     Console.WriteLine("");
 }
 
